@@ -1,4 +1,4 @@
-﻿import {
+import {
   createClient,
   type AuthError,
   type PostgrestError,
@@ -21,12 +21,12 @@ const authOptions = {
   },
 };
 
-let adminClient: SupabaseClient<Database> | null = null;
-let publicClient: SupabaseClient<Database> | null = null;
+let adminClient: SupabaseClient<any> | null = null;
+let publicClient: SupabaseClient<any> | null = null;
 
 export function getSupabaseAdmin() {
   if (!adminClient) {
-    adminClient = createClient<Database>(
+    adminClient = createClient<any>(
       getRequiredEnv("SUPABASE_URL"),
       getRequiredEnv(["SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_SECRET_KEY"]),
       authOptions,
@@ -38,7 +38,7 @@ export function getSupabaseAdmin() {
 
 export function getSupabasePublic() {
   if (!publicClient) {
-    publicClient = createClient<Database>(
+    publicClient = createClient<any>(
       getRequiredEnv("SUPABASE_URL"),
       getRequiredEnv("SUPABASE_ANON_KEY"),
       authOptions,
@@ -48,8 +48,8 @@ export function getSupabasePublic() {
   return publicClient;
 }
 
-export function getProfileBucket() {
-  return getOptionalEnv("SUPABASE_PROFILE_BUCKET", "profile-images");
+export function getProfileBucket(): string {
+  return getOptionalEnv("SUPABASE_PROFILE_BUCKET", "profile-images") || "profile-images";
 }
 
 export function assertNoSupabaseError(

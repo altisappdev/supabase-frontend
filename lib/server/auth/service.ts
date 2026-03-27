@@ -98,11 +98,13 @@ async function getActiveBlockTtl(identifier: string, ip: string) {
 
   assertNoSupabaseError(error, "Failed to fetch login attempt state");
 
-  if (!data?.blocked_until) {
+  const blockedUntil = (data as { blocked_until: string | null } | null)?.blocked_until;
+
+  if (!blockedUntil) {
     return 0;
   }
 
-  const ttlSeconds = Math.ceil((new Date(data.blocked_until).getTime() - Date.now()) / 1000);
+  const ttlSeconds = Math.ceil((new Date(blockedUntil).getTime() - Date.now()) / 1000);
   return ttlSeconds > 0 ? ttlSeconds : 0;
 }
 
