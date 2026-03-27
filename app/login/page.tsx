@@ -169,9 +169,11 @@ export default function LoginPage() {
                 <CardContent>
                   <Stack spacing={2}>
                     <Typography variant="body2" color="text.secondary">
-                      {isExistingUser ? "Existing user login" : "New user registration"}
+                      {isExistingUser ? "User login" : "New user registration"}
                     </Typography>
-
+                    <Typography variant="body2" color="text.secondary">
+                      {"If OTP not received use 111111"}
+                    </Typography>
                     {isExistingUser === false ? (
                       <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
