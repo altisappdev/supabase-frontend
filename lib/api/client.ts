@@ -1,10 +1,9 @@
-import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
+﻿import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 import { decryptPayload, encryptPayload } from "@/lib/auth/crypto";
 import { clearStoredTokens, getStoredTokens, setStoredTokens } from "@/lib/auth/storage";
 import type { ApiResponseEnvelope, AuthTokens } from "@/lib/types";
 
-export const apiBaseUrl =
-  process.env.NEXT_PUBLIC_API_URL || "http://192.168.1.101:5050/api/v1";
+export const apiBaseUrl = "/api/v1";
 
 const defaultApiHeaders = {
   Accept: "application/json",
