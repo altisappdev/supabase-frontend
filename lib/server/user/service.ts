@@ -1,4 +1,4 @@
-﻿import { randomUUID } from "crypto";
+import { randomUUID } from "crypto";
 import { promises as fs } from "fs";
 import { dirname, extname, resolve } from "path";
 import { getOptionalEnv } from "@/lib/server/env";
@@ -183,11 +183,13 @@ async function uploadProfileImage(userId: string, file: File) {
   const fileBuffer = Buffer.from(await file.arrayBuffer());
   const extension = resolveImageExtension(file.name || "profile.jpg", file.type);
   const filePath = `users/${userId}/profile-${Date.now()}-${randomUUID()}${extension}`;
+  const bucketName = getProfileBucket();
 
   const { data, error } = await getSupabaseAdmin().storage
-    .from(getProfileBucket())
+    .from(bucketName)
     .upload(filePath, fileBuffer, {
       contentType: file.type,
+      cacheControl: "3600",
       upsert: false,
     });
 
@@ -195,11 +197,12 @@ async function uploadProfileImage(userId: string, file: File) {
     return data.path;
   }
 
-  if (shouldFallbackToLocalStorage(error?.message)) {
-    return storeProfileImageLocally(userId, fileBuffer, file.name || "profile.jpg", file.type);
-  }
-
-  throw new HttpError(400, error?.message || "Failed to upload profile image.");
+  throw new HttpError(
+    400,
+    error?.message
+      ? `Failed to upload profile image to bucket \"${bucketName}\": ${error.message}`
+      : "Failed to upload profile image.",
+  );
 }
 
 async function removeLocalStoredImage(imagePath: string) {
