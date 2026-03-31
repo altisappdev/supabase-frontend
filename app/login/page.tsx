@@ -175,8 +175,8 @@ export default function LoginPage() {
                       {"If OTP not received use 111111"}
                     </Typography>
                     {isExistingUser === false ? (
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                      <Grid container spacing={2} sx={{ width: "100%" }}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
                           <TextField
                             fullWidth
                             label="First name"
@@ -184,7 +184,7 @@ export default function LoginPage() {
                             onChange={(event) => setFirstName(event.target.value)}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
                           <TextField
                             fullWidth
                             label="Last name"

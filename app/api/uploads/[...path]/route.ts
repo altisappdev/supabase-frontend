@@ -1,4 +1,4 @@
-﻿import { promises as fs } from "fs";
+import { promises as fs } from "fs";
 import { extname, resolve } from "path";
 import { NextResponse } from "next/server";
 
@@ -15,10 +15,11 @@ const contentTypeMap: Record<string, string> = {
 
 export async function GET(
   _request: Request,
-  { params }: { params: { path: string[] } },
+  { params }: { params: Promise<{ path: string[] }> },
 ) {
+  const { path } = await params;
   const uploadsRoot = resolve(process.cwd(), "uploads");
-  const filePath = resolve(uploadsRoot, ...params.path);
+  const filePath = resolve(uploadsRoot, ...path);
 
   if (!filePath.startsWith(uploadsRoot)) {
     return NextResponse.json({ message: "File not found." }, { status: 404 });

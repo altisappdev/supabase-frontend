@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { getCurrentUser } from "@/lib/api/user";
 import { loginWithEmailOtp, logoutCurrentSession } from "@/lib/api/auth";
 import { AUTH_EVENT_NAME } from "@/lib/auth/events";
@@ -22,12 +22,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
 
-  function setSessionUser(nextUser: UserProfile | null) {
+  const setSessionUser = useCallback((nextUser: UserProfile | null) => {
     setUser(nextUser);
     setStatus(nextUser ? "authenticated" : "unauthenticated");
-  }
+  }, []);
 
-  async function bootstrapUser() {
+  const bootstrapUser = useCallback(async () => {
     if (!hasStoredTokens()) {
       setSessionUser(null);
       return null;
@@ -42,31 +42,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSessionUser(null);
       return null;
     }
-  }
+  }, [setSessionUser]);
 
   useEffect(() => {
-    let active = true;
-
-    async function loadUser() {
-      const profile = await bootstrapUser();
-
-      if (!active && profile) {
-        return;
-      }
-    }
-
     function handleAuthEvent() {
       void bootstrapUser();
     }
 
-    void loadUser();
+    void bootstrapUser();
     window.addEventListener(AUTH_EVENT_NAME, handleAuthEvent as EventListener);
 
     return () => {
-      active = false;
       window.removeEventListener(AUTH_EVENT_NAME, handleAuthEvent as EventListener);
     };
-  }, []);
+  }, [bootstrapUser]);
 
   async function login(payload: LoginPayload) {
     const tokens = await loginWithEmailOtp(payload);

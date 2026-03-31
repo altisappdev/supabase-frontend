@@ -67,15 +67,30 @@ function getIdentifier(authMethod: AuthType, email?: string | null, phoneNo?: st
   return normalizeEmail(email);
 }
 
+type AuthFailureRpcClient = ReturnType<typeof getSupabaseAdmin> & {
+  rpc(
+    fn: "handle_auth_login_failure",
+    args: {
+      p_identifier: string;
+      p_ip_address: string;
+      p_max_attempts: number;
+      p_penalty_steps: number[];
+    },
+  ): Promise<{ error: { message: string } | null }>;
+};
+
 async function handleAuthFailure(identifier: string, ip: string) {
-  const { error } = await (getSupabaseAdmin() as any).rpc("handle_auth_login_failure", {
+  const adminClient = getSupabaseAdmin() as AuthFailureRpcClient;
+  const { error } = await adminClient.rpc("handle_auth_login_failure", {
     p_identifier: identifier,
     p_ip_address: ip,
     p_max_attempts: MAX_ATTEMPTS,
     p_penalty_steps: PENALTY_STEPS,
   });
 
-  assertNoSupabaseError(error, "Failed to register login failure");
+  if (error) {
+    throw new Error(`Failed to register login failure: ${error.message}`);
+  }
 }
 
 async function resetAuthLimits(identifier: string, ip: string) {

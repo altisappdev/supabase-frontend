@@ -1,4 +1,4 @@
-﻿import { errorResponse, jsonResponse } from "@/lib/server/api-response";
+import { errorResponse, jsonResponse } from "@/lib/server/api-response";
 import { authenticateRequest } from "@/lib/server/auth/session";
 import { deleteTodo, getTodoById, updateTodo } from "@/lib/server/todo/service";
 import { parseJsonBody } from "@/lib/server/request-utils";
@@ -8,11 +8,12 @@ export const runtime = "nodejs";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const auth = await authenticateRequest(request);
-    const todo = await getTodoById(params.id, auth.userId);
+    const todo = await getTodoById(id, auth.userId);
 
     return jsonResponse(todo, "Todo fetched successfully.");
   } catch (error) {
@@ -22,9 +23,10 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const auth = await authenticateRequest(request);
     const payload = await parseJsonBody<Partial<{
       title: string;
@@ -33,7 +35,7 @@ export async function PATCH(
       due_date: string;
       is_completed: boolean;
     }>>(request);
-    const todo = await updateTodo(params.id, auth.userId, payload);
+    const todo = await updateTodo(id, auth.userId, payload);
 
     return jsonResponse(todo, "Todo updated successfully.");
   } catch (error) {
@@ -43,11 +45,12 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const auth = await authenticateRequest(request);
-    await deleteTodo(params.id, auth.userId);
+    await deleteTodo(id, auth.userId);
 
     return jsonResponse(null, "Todo deleted successfully.");
   } catch (error) {

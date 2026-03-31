@@ -7,7 +7,7 @@ import {
   Box,
   Button,
   Card,
-  CardContent, 
+  CardContent,
   Chip,
   Container,
   Grid,
@@ -128,8 +128,8 @@ export default function ProfilePage() {
           subtitle="Update your account details and profile image."
         />
 
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
+        <Grid container spacing={2} sx={{ width: "100%" }}>
+          <Grid size={12}>
             <Card variant="outlined">
               <CardContent>
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems="center">
@@ -174,13 +174,13 @@ export default function ProfilePage() {
             </Card>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Card variant="outlined">
               <CardContent>
                 <Stack spacing={2}>
                   <Typography variant="h6">Edit details</Typography>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                  <Grid container spacing={2} sx={{ width: "100%" }}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         fullWidth
                         label="First name"
@@ -193,7 +193,7 @@ export default function ProfilePage() {
                         }
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         fullWidth
                         label="Last name"
@@ -206,7 +206,7 @@ export default function ProfilePage() {
                         }
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <TextField
                         fullWidth
                         label="Email"
@@ -220,7 +220,7 @@ export default function ProfilePage() {
                         }
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <TextField
                         fullWidth
                         label="Phone number"

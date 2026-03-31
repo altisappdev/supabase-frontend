@@ -273,9 +273,9 @@ export default function DashboardPage() {
         <Stack spacing={3}>
           <Card variant="outlined">
             <CardContent>
-              <Grid container spacing={2}>
+              <Grid container spacing={2} sx={{ width: "100%" }}>
                 {stats.map((stat) => (
-                  <Grid item xs={4} key={stat.label}>
+                  <Grid size={4} key={stat.label}>
                     <Typography variant="caption" color="text.secondary">
                       {stat.label}
                     </Typography>
@@ -347,8 +347,8 @@ export default function DashboardPage() {
                     multiline
                     rows={3}
                   />
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} md={6}>
+                  <Grid container spacing={2} sx={{ width: "100%" }}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <FormControl fullWidth>
                         <InputLabel>Priority</InputLabel>
                         <Select
@@ -367,7 +367,7 @@ export default function DashboardPage() {
                         </Select>
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <TextField
                         fullWidth
                         type="datetime-local"

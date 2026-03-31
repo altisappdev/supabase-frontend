@@ -6,7 +6,6 @@ import {
 } from "@supabase/supabase-js";
 import { getOptionalEnv, getRequiredEnv } from "@/lib/server/env";
 import type {
-  Database,
   RoleName,
   RoleRow,
   UserRow,
@@ -21,12 +20,12 @@ const authOptions = {
   },
 };
 
-let adminClient: SupabaseClient<any> | null = null;
-let publicClient: SupabaseClient<any> | null = null;
+let adminClient: SupabaseClient | null = null;
+let publicClient: SupabaseClient | null = null;
 
 export function getSupabaseAdmin() {
   if (!adminClient) {
-    adminClient = createClient<any>(
+    adminClient = createClient(
       getRequiredEnv("SUPABASE_URL"),
       getRequiredEnv(["SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_SECRET_KEY"]),
       authOptions,
@@ -38,7 +37,7 @@ export function getSupabaseAdmin() {
 
 export function getSupabasePublic() {
   if (!publicClient) {
-    publicClient = createClient<any>(
+    publicClient = createClient(
       getRequiredEnv("SUPABASE_URL"),
       getRequiredEnv("SUPABASE_ANON_KEY"),
       authOptions,

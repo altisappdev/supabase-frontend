@@ -41,11 +41,11 @@ function isLocalUploadPath(imagePath: string) {
 }
 
 function getUploadsRoot() {
-  return resolve(process.cwd(), "uploads");
+  return resolve(/* turbopackIgnore: true */ process.cwd(), "uploads");
 }
 
 function resolveLocalUploadPath(filePath: string) {
-  return resolve(process.cwd(), ...normalizeStoredPath(filePath).split("/"));
+  return resolve(/* turbopackIgnore: true */ process.cwd(), ...normalizeStoredPath(filePath).split("/"));
 }
 
 function resolveImageExtension(fileNameSource: string, mimeType?: string) {
@@ -91,15 +91,15 @@ async function syncAuthUser(user: ResolvedUserWithRole) {
     },
     ...(user.email
       ? {
-          email: user.email,
-          email_confirm: true,
-        }
+        email: user.email,
+        email_confirm: true,
+      }
       : {}),
     ...(user.phone_no
       ? {
-          phone: user.phone_no,
-          phone_confirm: true,
-        }
+        phone: user.phone_no,
+        phone_confirm: true,
+      }
       : {}),
   });
 
@@ -195,6 +195,10 @@ async function uploadProfileImage(userId: string, file: File) {
 
   if (!error && data?.path) {
     return data.path;
+  }
+
+  if (shouldFallbackToLocalStorage(error?.message)) {
+    return storeProfileImageLocally(userId, fileBuffer, file.name || "profile.jpg", file.type);
   }
 
   throw new HttpError(
